@@ -24,12 +24,14 @@ The orchestrator coordinates four specialized agents. Each agent starts with zer
 
 Notify the user: `🧠 Agent 1 (Planner — Opus) is analyzing the codebase and building the plan...`
 
-Spawn a fresh agent using **model: opus** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "opus"**:
 
 ```
-You are a senior software architect. Your job is to produce a detailed implementation plan for the feature described below.
+Read src/agents/planner.md and inline its full content at the start of this prompt.
 
-Analyze the codebase thoroughly before proposing anything. Read relevant files, grep for related patterns, and understand the existing architecture.
+Start your response with: "🧠 Running as: <your actual model name>"
+
+Your job is to produce a detailed implementation plan for the feature described below.
 
 ## Feature request
 <user description>
@@ -68,10 +70,14 @@ Display the plan to the user. Iterate with the user until they explicitly approv
 
 Notify the user: `⚙️ Agent 2 (Implementer — Sonnet) is creating the branch and implementing the feature...`
 
-Spawn a fresh agent using **model: sonnet** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
-You are a senior software engineer. Your job is to implement a feature exactly as described in the plan below.
+Read src/agents/implementer.md and inline its full content at the start of this prompt.
+
+Start your response with: "⚙️ Running as: <your actual model name>"
+
+Your job is to implement a feature exactly as described in the plan below.
 
 ## Approved plan
 <plan from Phase 1>
@@ -84,7 +90,7 @@ You are a senior software engineer. Your job is to implement a feature exactly a
 1. Follow the /branch command logic to create the branch (feat/, fix/, dev/) based on the feature type.
 2. Implement each step from the plan sequentially.
 3. After each logical implementation chunk, follow the /commit command logic to commit (Conventional Commits, imperative, max 72 chars).
-4. Co-author line on every commit: Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+4. Co-author line on every commit: Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 5. After all implementation is done, check if any test file was created or modified. If no test was touched, note it in your final report.
 
 ## /branch logic
@@ -127,10 +133,14 @@ If tests **fail**: spawn a fix agent (see 3a-fix below) before proceeding to 3b.
 
 Notify the user: `🔧 Tests failed. Spawning fix agent (Sonnet) to resolve failures...`
 
-Spawn a fresh agent using **model: sonnet** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
-You are a senior software engineer. The following tests are failing after a feature was implemented. Fix them without changing the feature behavior.
+Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🔧 Running as: <your actual model name>"
+
+The following tests are failing after a feature was implemented. Fix them without changing the feature behavior.
 
 ## Failing tests output
 <test output>
@@ -142,13 +152,13 @@ You are a senior software engineer. The following tests are failing after a feat
 <git log output>
 
 Fix the failures, then follow /commit logic to commit each fix (fix: ...).
-Co-author: Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+Co-author: Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 Do not push.
 
 Return: list of fixes made and commits created.
 ```
 
-Re-run tests after fixes. Repeat if still failing.
+Re-run tests after fixes. If tests still fail, retry once more (maximum 2 retry attempts total). If tests still fail after 2 rounds, abort: report the remaining failures to the orchestrator and do not proceed further.
 
 ### 3b — Review Agent (Agent 3 — model: sonnet)
 
@@ -162,7 +172,11 @@ Notify the user: `🔍 Agent 3 (Reviewer — Sonnet) is reviewing the implementa
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior code reviewer. You have zero context about this feature — evaluate only what is provided.
+Read src/agents/reviewer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🔍 Running as: <your actual model name>"
+
+You have zero context about this feature — evaluate only what is provided.
 
 ## Feature plan
 <plan from Phase 1>
@@ -199,7 +213,11 @@ Notify the user: `🛠️ Agent 4 (Fixer — Sonnet) is resolving review issues.
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior software engineer. Fix the issues listed below found during code review of a recently implemented feature.
+Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🛠️ Running as: <your actual model name>"
+
+Fix the issues listed below found during code review of a recently implemented feature.
 
 ## Feature plan (for context)
 <plan from Phase 1>
@@ -211,7 +229,7 @@ You are a senior software engineer. Fix the issues listed below found during cod
 <branch name>
 
 Fix each issue. For each fix, follow /commit logic to commit (fix: ...).
-Co-author: Co-Authored-By: Claude Opus 4.7 <noreply@anthropic.com>
+Co-author: Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 Do not push.
 
 Return: list of fixes and commits created.
@@ -221,7 +239,7 @@ Re-run tests after fixes to confirm nothing broke.
 
 ---
 
-## Phase 4 — Finalize
+## Phase 5 — Finalize
 
 After ACT (or directly if no issues):
 
@@ -260,3 +278,4 @@ After ACT (or directly if no issues):
 - Each agent receives only what it needs — no leaking full conversation context
 - User approves at: end of PLAN, end of DO, end of CHECK
 - All commits follow Conventional Commits and include the co-author line
+- The commands `/branch`, `/commit`, `/feature-docs`, and `/pr` are expected to exist in `src/commands/`. Before starting Phase 2, verify that each required command directory or file is present. If any is missing, warn the user and abort rather than silently failing.
