@@ -17,6 +17,7 @@ echo ""
 
 # Link commands
 echo "Commands:"
+find "$CLAUDE_COMMANDS" -maxdepth 1 -xtype l -delete
 for dir in "$AIWORKERS_DIR/src/commands"/*/; do
   name=$(basename "$dir")
   ln -sf "$dir" "$CLAUDE_COMMANDS/$name"
@@ -27,6 +28,7 @@ echo ""
 
 # Link agents (symlinks only — no CLAUDE.md imports)
 echo "Agents:"
+find "$CLAUDE_AGENTS" -maxdepth 1 -xtype l -delete
 for file in "$AIWORKERS_DIR/src/agents"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
@@ -38,6 +40,7 @@ echo ""
 
 # Link rules
 echo "Rules:"
+find "$CLAUDE_RULES" -maxdepth 1 -xtype l -delete
 for file in "$AIWORKERS_DIR/src/rules"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
