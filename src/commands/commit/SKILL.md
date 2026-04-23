@@ -12,6 +12,13 @@ model: haiku
 
 Inform the user: "I'll use the Haiku model to analyze the changes and create the commits."
 
+## Pre-flight check
+
+1. Run `git branch --show-current` to get the current branch.
+2. If on `main` or `master`: warn the user and ask if they want to create a branch first.
+   - If yes: follow the `/branch` command logic to create the branch, then proceed with commits.
+   - If no: abort. Do not commit to `main` or `master`.
+
 ## Process
 
 1. Run `git status` and `git diff HEAD` to understand what changed
