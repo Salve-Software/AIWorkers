@@ -27,9 +27,9 @@ Notify the user: `🧠 Agent 1 (Planner — Opus) is analyzing the codebase and 
 Spawn a fresh agent using **model: opus** with:
 
 ```
-You are a senior software architect. Your job is to produce a detailed implementation plan for the feature described below.
+Read src/agents/planner.md and inline its full content at the start of this prompt.
 
-Analyze the codebase thoroughly before proposing anything. Read relevant files, grep for related patterns, and understand the existing architecture.
+Your job is to produce a detailed implementation plan for the feature described below.
 
 ## Feature request
 <user description>
@@ -71,7 +71,9 @@ Notify the user: `⚙️ Agent 2 (Implementer — Sonnet) is creating the branch
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior software engineer. Your job is to implement a feature exactly as described in the plan below.
+Read src/agents/implementer.md and inline its full content at the start of this prompt.
+
+Your job is to implement a feature exactly as described in the plan below.
 
 ## Approved plan
 <plan from Phase 1>
@@ -130,7 +132,9 @@ Notify the user: `🔧 Tests failed. Spawning fix agent (Sonnet) to resolve fail
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior software engineer. The following tests are failing after a feature was implemented. Fix them without changing the feature behavior.
+Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+The following tests are failing after a feature was implemented. Fix them without changing the feature behavior.
 
 ## Failing tests output
 <test output>
@@ -162,7 +166,9 @@ Notify the user: `🔍 Agent 3 (Reviewer — Sonnet) is reviewing the implementa
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior code reviewer. You have zero context about this feature — evaluate only what is provided.
+Read src/agents/reviewer.md and inline its full content at the start of this prompt.
+
+You have zero context about this feature — evaluate only what is provided.
 
 ## Feature plan
 <plan from Phase 1>
@@ -199,7 +205,9 @@ Notify the user: `🛠️ Agent 4 (Fixer — Sonnet) is resolving review issues.
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-You are a senior software engineer. Fix the issues listed below found during code review of a recently implemented feature.
+Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+Fix the issues listed below found during code review of a recently implemented feature.
 
 ## Feature plan (for context)
 <plan from Phase 1>
