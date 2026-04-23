@@ -1,7 +1,7 @@
 #!/bin/bash
 
 AIWORKERS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CLAUDE_DIR="$HOME/.claude"
+CLAUDE_DIR="$AIWORKERS_DIR/.claude"
 CLAUDE_COMMANDS="$CLAUDE_DIR/commands"
 CLAUDE_RULES="$CLAUDE_DIR/rules"
 CLAUDE_AGENTS="$CLAUDE_DIR/agents"
@@ -12,15 +12,15 @@ mkdir -p "$CLAUDE_RULES"
 mkdir -p "$CLAUDE_AGENTS"
 touch "$CLAUDE_MD"
 
-echo "Linking AIWorkers to ~/.claude/..."
+echo "Linking AIWorkers to .claude/..."
 echo ""
 
 # Link commands
 echo "Commands:"
-find "$CLAUDE_COMMANDS" -maxdepth 1 -xtype l -delete
+find "$CLAUDE_COMMANDS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
 for dir in "$AIWORKERS_DIR/src/commands"/*/; do
   name=$(basename "$dir")
-  ln -sf "$dir" "$CLAUDE_COMMANDS/$name"
+  ln -sfn "$dir" "$CLAUDE_COMMANDS/$name"
   echo "  ✓ $name"
 done
 
@@ -28,11 +28,11 @@ echo ""
 
 # Link agents (symlinks only — no CLAUDE.md imports)
 echo "Agents:"
-find "$CLAUDE_AGENTS" -maxdepth 1 -xtype l -delete
+find "$CLAUDE_AGENTS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
 for file in "$AIWORKERS_DIR/src/agents"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
-  ln -sf "$file" "$CLAUDE_AGENTS/$name"
+  ln -sfn "$file" "$CLAUDE_AGENTS/$name"
   echo "  ✓ $name"
 done
 
@@ -40,18 +40,18 @@ echo ""
 
 # Link rules
 echo "Rules:"
-find "$CLAUDE_RULES" -maxdepth 1 -xtype l -delete
+find "$CLAUDE_RULES" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
 for file in "$AIWORKERS_DIR/src/rules"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
-  ln -sf "$file" "$CLAUDE_RULES/$name"
+  ln -sfn "$file" "$CLAUDE_RULES/$name"
   echo "  ✓ $name"
 done
 
 echo ""
 
-# Add rule imports to ~/.claude/CLAUDE.md (idempotent)
-echo "Updating ~/.claude/CLAUDE.md:"
+# Add rule imports to .claude/CLAUDE.md (idempotent)
+echo "Updating .claude/CLAUDE.md:"
 for file in "$AIWORKERS_DIR/src/rules"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
@@ -65,4 +65,4 @@ for file in "$AIWORKERS_DIR/src/rules"/*.md; do
 done
 
 echo ""
-echo "Done. AIWorkers is fully linked globally."
+echo "Done. AIWorkers is fully linked to .claude/"
