@@ -1,0 +1,17 @@
+{
+  "name": "@salve-software/ai-workers",
+  "version": "0.1.0",
+  "description": "Central package for AI configurations and Claude Code rules.",
+  "scripts": {
+    "postinstall": "bash scripts/setup.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Salve-Software/AIWorkers.git"
+  },
+  "author": "eumaninho54",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "restricted"
+  }
+}

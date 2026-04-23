@@ -1,7 +1,12 @@
 #!/bin/bash
 
 AIWORKERS_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-CLAUDE_DIR="$AIWORKERS_DIR/.claude"
+
+# When run via postinstall, $INIT_CWD is the consuming project root
+# When run standalone, fall back to cwd
+TARGET_DIR="${INIT_CWD:-$PWD}"
+
+CLAUDE_DIR="$TARGET_DIR/.claude"
 CLAUDE_COMMANDS="$CLAUDE_DIR/commands"
 CLAUDE_RULES="$CLAUDE_DIR/rules"
 CLAUDE_AGENTS="$CLAUDE_DIR/agents"
@@ -12,7 +17,7 @@ mkdir -p "$CLAUDE_RULES"
 mkdir -p "$CLAUDE_AGENTS"
 touch "$CLAUDE_MD"
 
-echo "Linking AIWorkers to .claude/..."
+echo "Linking AIWorkers to $CLAUDE_DIR..."
 echo ""
 
 # Link commands
@@ -70,4 +75,4 @@ ln -sfn "$AIWORKERS_DIR/settings.json" "$CLAUDE_DIR/settings.json"
 echo "  ✓ settings.json"
 
 echo ""
-echo "Done. AIWorkers is fully linked to .claude/"
+echo "Done. AIWorkers is fully linked to $CLAUDE_DIR"
