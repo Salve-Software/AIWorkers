@@ -17,6 +17,12 @@ Creates a GitHub pull request for the current branch using the `gh` CLI.
 Run `gh auth status` to confirm the user is authenticated.
 - If not authenticated: stop and instruct: *"Run `gh auth login` first, then retry /pr."*
 
+Check if the current branch has been pushed to remote:
+```bash
+git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null
+```
+- If no upstream is set: run `git push -u origin <branch>` automatically, then continue.
+
 ### 2. Gather context
 
 - Current branch: `git branch --show-current`
@@ -64,6 +70,6 @@ Display: `✓ PR created: <URL>`
 
 ## Rules
 
-- Never push the branch — that is the user's responsibility before running /pr
+- If the branch has no upstream, push it automatically with `git push -u origin <branch>` before creating the PR
 - Do not set reviewers, labels, or assignees — leave that to the user
 - If the branch has no commits ahead of base, stop and warn the user
