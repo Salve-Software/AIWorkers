@@ -9,7 +9,7 @@ TARGET_DIR="${INIT_CWD:-$PWD}"
 CLAUDE_DIR="$TARGET_DIR/.claude"
 AW_COMMANDS="$CLAUDE_DIR/commands/aiworkers"
 AW_AGENTS="$CLAUDE_DIR/agents/aiworkers"
-AW_RULES="$CLAUDE_DIR/aiworkers/rules"
+AW_RULES="$CLAUDE_DIR/rules/aiworkers"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 
 mkdir -p "$AW_COMMANDS"
@@ -60,7 +60,7 @@ echo "Updating .claude/CLAUDE.md:"
 for file in "$AIWORKERS_DIR/src/rules"/*.md; do
   [ -e "$file" ] || continue
   name=$(basename "$file")
-  import_line="@aiworkers/rules/$name"
+  import_line="@rules/aiworkers/$name"
   if ! grep -qF "$import_line" "$CLAUDE_MD"; then
     echo "$import_line" >> "$CLAUDE_MD"
     echo "  ✓ Added import: $import_line"
