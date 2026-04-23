@@ -10,11 +10,9 @@ model: haiku
 
 ## Process
 
-1. If $ARGUMENTS is empty, ask the user:
-   "What will this branch be about? Describe the feature, fix, or context — and indicate the type (feat, fix, dev, or release)."
-   Wait for the user's response before proceeding.
+1. If $ARGUMENTS is empty, run `git status` and `git diff HEAD` to analyze current changes and infer the branch context automatically. Do NOT ask the user — derive the type and name from the diff.
 
-2. Based on the input, determine the branch type and generate a kebab-case name.
+2. Based on the input or inferred context, determine the branch type and generate a kebab-case name.
 
 3. Run `git checkout -b <branch-name>` to create and switch to the branch.
 
