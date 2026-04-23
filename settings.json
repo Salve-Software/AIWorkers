@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git checkout*)",
+      "Bash(git add*)",
+      "Bash(git checkout -b*)",
+      "Bash(git commit*)",
+      "Bash(gh pr create*)",
+      "Bash(gh auth status*)",
+      "Bash(npm test*)",
+      "Bash(yarn test*)",
+      "Bash(pnpm test*)",
+      "Bash(npx vitest*)",
+      "Bash(pytest*)",
+      "Bash(make test*)"
+    ],
+    "deny": [
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Bash(git clean -fd*)",
+      "Bash(rm -rf *)"
+    ]
+  }
+}
