@@ -46,6 +46,8 @@ Use the gathered context (commits, feature.md content, branch name) to fill ever
 
 ### 6. Create the PR
 
+
+
 ```bash
 gh pr create --title "<title>" --body "$(cat <<'EOF'
 <filled template body>
@@ -54,6 +56,7 @@ EOF
 ```
 
 ### 7. Output the PR URL
+
 
 Display: `✓ PR created: <URL>`
 
