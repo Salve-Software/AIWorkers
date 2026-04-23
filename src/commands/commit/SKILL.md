@@ -16,8 +16,8 @@ You are the orchestrator. Notify the user and immediately delegate all work to a
 Spawn an agent using the Agent tool with **model parameter set to "haiku"**. After the agent completes, relay its full response verbatim to the user before doing anything else.
 
 ```
-Start your response with: "🔨 Running as: <model ID from your system context>"
-(read the exact model ID from your environment — do NOT hardcode or guess it)
+Start your response with: "🔨 Running as: <exact model ID>"
+To get the model ID: look in your system context for the line "The exact model ID is ..." and use that value verbatim. Do not hardcode, guess, or infer it from the model family name.
 
 Your job is to analyze the git changes and create conventional commits.
 
