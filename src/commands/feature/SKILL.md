@@ -24,10 +24,12 @@ The orchestrator coordinates four specialized agents. Each agent starts with zer
 
 Notify the user: `🧠 Agent 1 (Planner — Opus) is analyzing the codebase and building the plan...`
 
-Spawn a fresh agent using **model: opus** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "opus"**:
 
 ```
 Read src/agents/planner.md and inline its full content at the start of this prompt.
+
+Start your response with: "🧠 Running as: <your actual model name>"
 
 Your job is to produce a detailed implementation plan for the feature described below.
 
@@ -68,10 +70,12 @@ Display the plan to the user. Iterate with the user until they explicitly approv
 
 Notify the user: `⚙️ Agent 2 (Implementer — Sonnet) is creating the branch and implementing the feature...`
 
-Spawn a fresh agent using **model: sonnet** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
 Read src/agents/implementer.md and inline its full content at the start of this prompt.
+
+Start your response with: "⚙️ Running as: <your actual model name>"
 
 Your job is to implement a feature exactly as described in the plan below.
 
@@ -129,10 +133,12 @@ If tests **fail**: spawn a fix agent (see 3a-fix below) before proceeding to 3b.
 
 Notify the user: `🔧 Tests failed. Spawning fix agent (Sonnet) to resolve failures...`
 
-Spawn a fresh agent using **model: sonnet** with:
+Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
 Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🔧 Running as: <your actual model name>"
 
 The following tests are failing after a feature was implemented. Fix them without changing the feature behavior.
 
@@ -167,6 +173,8 @@ Spawn a fresh agent using **model: sonnet** with:
 
 ```
 Read src/agents/reviewer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🔍 Running as: <your actual model name>"
 
 You have zero context about this feature — evaluate only what is provided.
 
@@ -206,6 +214,8 @@ Spawn a fresh agent using **model: sonnet** with:
 
 ```
 Read src/agents/fixer.md and inline its full content at the start of this prompt.
+
+Start your response with: "🛠️ Running as: <your actual model name>"
 
 Fix the issues listed below found during code review of a recently implemented feature.
 
