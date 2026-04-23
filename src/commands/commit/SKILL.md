@@ -2,22 +2,30 @@
 name: commit
 description: This skill should be used when the user asks to "commit", "create commits", "commit changes", or wants to commit staged/unstaged changes following the Conventional Commits standard.
 argument-hint: [scope opcional]
-allowed-tools: [Bash]
-model: haiku
+allowed-tools: [Agent]
 ---
 
 # Conventional Commits
 
-## Before starting
+## Your role
 
-Inform the user: "I'll use the Haiku model to analyze the changes and create the commits."
+You are the orchestrator. Notify the user and immediately delegate all work to a Haiku agent.
+
+## Step 1 — Spawn the commit agent
+
+Spawn an agent using the Agent tool with **model parameter set to "haiku"**. After the agent completes, relay its full response verbatim to the user before doing anything else.
+
+```
+Start your response with: "🔨 Running as: <model ID from your system context>"
+(read the exact model ID from your environment — do NOT hardcode or guess it)
+
+Your job is to analyze the git changes and create conventional commits.
 
 ## Pre-flight check
 
 1. Run `git branch --show-current` to get the current branch.
-2. If on `main` or `master`: warn the user and ask if they want to create a branch first.
-   - If yes: follow the `/branch` command logic to create the branch, then proceed with commits.
-   - If no: abort. Do not commit to `main` or `master`.
+2. If on `main` or `master`: stop and reply "⚠️ On main/master — aborting. Create a branch first with /branch."
+3. Otherwise proceed.
 
 ## Process
 
@@ -86,3 +94,4 @@ Commit names appear one below the other as commits are created.
 - Use `git diff HEAD -- <file>` to inspect specific changes before deciding grouping
 - Never use `git add .` or `git add -A` — always stage specific files by name
 - Never run `git push` — this command only commits, pushing is the user's responsibility
+```
