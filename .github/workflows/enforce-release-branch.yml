@@ -22,6 +22,5 @@ jobs:
               --method POST \
               --field body="This PR has been closed automatically. Only \`release/vX.Y.Z\` branches may target \`main\`. Please retarget this PR to a release branch."
             gh pr close ${{ github.event.pull_request.number }} --repo ${{ github.repository }}
-            echo "::error::PRs targeting main must come from a release/vX.Y.Z branch. Got: $BRANCH"
-            exit 1
+            exit 0
           fi
