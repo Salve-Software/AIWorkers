@@ -2,7 +2,7 @@
 
 ## User-invokable commands (`/name`)
 
-Commands are invoked directly by the user with `/name`. Use `commands/<name>/SKILL.md`:
+Commands are invoked **only** when the user explicitly types `/name`. Claude must never auto-trigger a command based on context — that is exclusively for skills. Use `commands/<name>/SKILL.md`:
 
 ```
 commands/
@@ -14,6 +14,19 @@ commands/
 ```
 
 Examples: `/feature`, `/ship`
+
+## Routing rule
+
+**Before invoking any skill or command, apply this decision tree — no exceptions:**
+
+1. Did the user's message contain the exact slash command text (e.g. `/aiworkers:land`, `/feature`)? 
+   - **YES** → use the matching `commands/<name>/SKILL.md`
+   - **NO** → go to step 2
+
+2. Find the relevant context-triggered skill in `skills/` and read its `SKILL.md` directly.
+
+**Never use `commands/` when the user did not type the slash command.** Pattern-matching intent (e.g. "commit my changes" → `/aiworkers:land`) is forbidden. Always route through `skills/` for natural language requests.
+
 
 ## Context-triggered skills
 
