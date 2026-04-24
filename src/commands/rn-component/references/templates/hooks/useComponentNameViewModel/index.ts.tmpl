@@ -1,0 +1,17 @@
+import { useCallback, useState } from 'react';
+import { I{{ComponentName}}Props } from '../../types';
+import { IUse{{ComponentName}}ViewModelReturn } from './types';
+
+// All logic lives here — services and library calls are invoked from this hook.
+export const use{{ComponentName}}ViewModel = (
+  props: I{{ComponentName}}Props,
+): IUse{{ComponentName}}ViewModelReturn => {
+  const [state, setState] = useState(null);
+
+  const handleAction = useCallback(() => {}, []);
+
+  return {
+    state,
+    handleAction,
+  };
+};
