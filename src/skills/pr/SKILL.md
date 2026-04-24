@@ -51,19 +51,36 @@ If `$ARGUMENTS` is provided, use it as the title instead.
 
 Use the gathered context (commits, feature.md content, branch name) to fill every section of the PR template. Do not leave placeholder comments unfilled.
 
-### 6. Create the PR
+### 6. Ensure base branch exists on remote
 
-
+Before creating the PR, verify the base branch exists on the remote:
 
 ```bash
-gh pr create --title "<title>" --body "$(cat <<'EOF'
+git ls-remote --exit-code origin <base-branch> 2>/dev/null
+```
+
+- If it exists: proceed normally.
+- If it does **not** exist: create and push it from `main` as a fallback:
+
+```bash
+git checkout main
+git checkout -b <base-branch>
+git push -u origin <base-branch>
+git checkout <current-branch>
+```
+
+Then continue with PR creation.
+
+### 7. Create the PR
+
+```bash
+gh pr create --title "<title>" --base <base-branch> --body "$(cat <<'EOF'
 <filled template body>
 EOF
 )"
 ```
 
-### 7. Output the PR URL
-
+### 8. Output the PR URL
 
 Display: `✓ PR created: <URL>`
 
@@ -72,6 +89,7 @@ Display: `✓ PR created: <URL>`
 ## Rules
 
 - If the branch has no upstream, push it automatically with `git push -u origin <branch>` before creating the PR
+- If the base branch does not exist on the remote, create it from `main` and push it — then return to the current branch before creating the PR
 - Do not set reviewers, labels, or assignees — leave that to the user
 - If the branch has no commits ahead of base, stop and warn the user
 - **Never invent a PR body.** Always read the template file and use it as the body structure — including all emojis, sections, and checkboxes exactly as they appear
