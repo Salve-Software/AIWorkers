@@ -36,7 +36,8 @@ Claude Code automatically injects all AIWorkers context — rules, commands, and
 ```
 AIWorkers/
 ├── src/
-│   ├── commands/          # Reusable slash commands → docs/commands.md
+│   ├── commands/          # User-invokable slash commands → docs/commands.md
+│   ├── skills/            # Context-triggered skills (auto-invoked by Claude)
 │   ├── agents/            # Agent personas → docs/agents.md
 │   └── rules/             # Composable rules (one responsibility per file)
 ├── docs/                  # Decisions, patterns, and reference docs

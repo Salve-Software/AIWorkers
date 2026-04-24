@@ -4,11 +4,10 @@ All commands are available globally after running `setup.sh`. Invoke them with `
 
 | Command | Description | Model |
 |---|---|---|
-| `/branch` | Creates a branch following the naming convention | Haiku |
-| `/commit` | Analyzes changes and creates semantic commits (Conventional Commits) | Haiku |
-| `/feature` | Autonomous PDCA workflow — plan, implement, review, fix, document, and open PR | Opus + Sonnet |
-| `/feature-docs` | Generates human and AI context documentation for a feature | Haiku |
-| `/pr` | Creates a pull request on GitHub using `gh` CLI | Haiku |
+| `/feature` | Autonomous PDCA workflow — plan, implement, review, fix, and open PR | Opus + Sonnet |
+| `/land` | Creates a branch and commits, optionally opens a PR | Haiku |
+
+> **Skills** (auto-invoked by Claude, not typed by the user): `branch`, `commit`, `pr`
 
 ---
 
@@ -20,6 +19,16 @@ All commands are available globally after running `setup.sh`. Invoke them with `
 | `fix/` | Bug fix | `fix/refresh-button-color` |
 | `dev/` | Project/umbrella branch | `dev/home-refresh` |
 | `release/` | Release — always with version | `release/v1.1.0` |
+
+---
+
+## `/land` — Branch + Commit orchestrator
+
+```
+/land "optional branch description"
+```
+
+Captures the git diff once and runs `branch` → `commit` in sequence, sharing context to avoid redundant reads. If you also ask for a PR, runs `pr` after.
 
 ---
 
@@ -42,7 +51,6 @@ All commands are available globally after running `setup.sh`. Invoke them with `
 🛠️ Agent 4 — Fixer (Sonnet)
    Resolves every issue found in the review and commits the fixes.
 
-   → Generates feature docs (feature.md + context.md)
    → Opens a PR on GitHub
    → Displays a final summary
 ```
