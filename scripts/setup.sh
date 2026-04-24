@@ -87,11 +87,4 @@ for file in "$AIWORKERS_DIR/src/rules"/*.md; do
 done
 
 echo ""
-
-# Link settings.json
-echo "Settings:"
-ln -sfn "$AIWORKERS_DIR/settings.json" "$CLAUDE_DIR/settings.json"
-echo "  ✓ settings.json"
-
-echo ""
 echo "Done. AIWorkers is fully linked to $CLAUDE_DIR"

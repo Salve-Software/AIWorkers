@@ -30,7 +30,7 @@ Your job is to analyze the git changes and create conventional commits.
 
 ## Process
 
-1. Run `git status` and `git diff HEAD` to understand what changed
+1. If `.claude/.aiworkers-context.tmp` exists: read its contents as the diff. Otherwise run `git status` and `git diff HEAD` to understand what changed
 2. Inspect specific files with `git diff HEAD -- <file>` as needed
 3. Group related files by semantic context
 4. For each group, determine the commit type and create the commit

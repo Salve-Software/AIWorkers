@@ -35,15 +35,23 @@ Read and follow `.claude/skills/aiworkers/commit/SKILL.md`.
 
 Instruct the commit agent to:
 - Check if `.claude/.aiworkers-context.tmp` exists
-- If yes: read its contents as the diff, then delete it with `rm .claude/.aiworkers-context.tmp`
+- If yes: read its contents as the diff instead of running `git diff HEAD`
 - If no: run `git diff HEAD` normally
 
-### 4. Run /pr (if requested)
+### 4. Delete temp file
+
+After /commit completes (success or failure), the orchestrator deletes the temp file:
+```bash
+rm .claude/.aiworkers-context.tmp
+```
+
+### 5. Run /pr (if requested)
 
 If the user's original request included creating a PR, read and follow `.claude/skills/aiworkers/pr/SKILL.md`.
 
 ## Rules
 
+- The orchestrator is solely responsible for saving and deleting `.claude/.aiworkers-context.tmp` — skills only read it, never delete it
 - Always delete `.claude/.aiworkers-context.tmp` after /commit, even if commit fails
 - If /branch fails, delete the tmp file before stopping
 - Never push the branch unless /pr is being run (which handles pushing itself)
