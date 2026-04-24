@@ -74,3 +74,4 @@ Display: `✓ PR created: <URL>`
 - If the branch has no upstream, push it automatically with `git push -u origin <branch>` before creating the PR
 - Do not set reviewers, labels, or assignees — leave that to the user
 - If the branch has no commits ahead of base, stop and warn the user
+- **Never invent a PR body.** Always read the template file and use it as the body structure — including all emojis, sections, and checkboxes exactly as they appear

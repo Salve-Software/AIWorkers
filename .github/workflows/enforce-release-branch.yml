@@ -1,0 +1,26 @@
+name: Enforce release branch target
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, reopened, synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  check-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Reject non-release PRs targeting main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          BRANCH="${{ github.head_ref }}"
+          if ! echo "$BRANCH" | grep -qE '^release/v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+              --method POST \
+              --field body="This PR has been closed automatically. Only \`release/vX.Y.Z\` branches may target \`main\`. Please retarget this PR to a release branch."
+            gh pr close ${{ github.event.pull_request.number }} --repo ${{ github.repository }}
+            exit 0
+          fi
