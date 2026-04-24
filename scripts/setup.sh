@@ -27,7 +27,9 @@ echo "Commands:"
 find "$AW_COMMANDS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
 for dir in "$AIWORKERS_DIR/src/commands"/*/; do
   name=$(basename "$dir")
-  ln -sfn "$dir" "$AW_COMMANDS/$name"
+  target="$AW_COMMANDS/$name"
+  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+  ln -sfn "$dir" "$target"
   echo "  ✓ $name"
 done
 
@@ -38,7 +40,9 @@ echo "Skills:"
 find "$AW_SKILLS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
 for dir in "$AIWORKERS_DIR/src/skills"/*/; do
   name=$(basename "$dir")
-  ln -sfn "$dir" "$AW_SKILLS/$name"
+  target="$AW_SKILLS/$name"
+  [ -d "$target" ] && [ ! -L "$target" ] && rm -rf "$target"
+  ln -sfn "$dir" "$target"
   echo "  ✓ $name"
 done
 

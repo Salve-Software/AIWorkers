@@ -1,0 +1,142 @@
+name: Deploy Release
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+jobs:
+  deploy:
+    if: github.event.issue.pull_request != null && github.event.comment.body == 'DEPLOY-RELEASE'
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: Resolve PR metadata
+        run: |
+          PR_NUMBER="${{ github.event.issue.number }}"
+          echo "PR_NUMBER=$PR_NUMBER" >> "$GITHUB_ENV"
+
+          PR_JSON=$(gh api repos/${{ github.repository }}/pulls/$PR_NUMBER)
+          PR_BRANCH=$(echo "$PR_JSON" | jq -r '.head.ref')
+          PR_STATE=$(echo "$PR_JSON" | jq -r '.state')
+
+          echo "PR_BRANCH=$PR_BRANCH" >> "$GITHUB_ENV"
+
+          if [ "$PR_STATE" != "open" ]; then
+            gh api repos/${{ github.repository }}/issues/$PR_NUMBER/comments \
+              --method POST \
+              --field body="Deploy cancelled: this PR is not open (state: \`$PR_STATE\`)."
+            exit 1
+          fi
+
+      - name: Check authorization
+        run: |
+          COMMENTER="${{ github.event.comment.user.login }}"
+
+          PERMISSION=$(gh api \
+            repos/${{ github.repository }}/collaborators/$COMMENTER/permission \
+            --jq '.permission' 2>/dev/null || echo "none")
+
+          IS_ADMIN=false
+          if [ "$PERMISSION" = "admin" ]; then
+            IS_ADMIN=true
+          fi
+
+          APPROVALS=$(gh api \
+            repos/${{ github.repository }}/pulls/${{ env.PR_NUMBER }}/reviews \
+            --jq '[.[] | select(.state == "APPROVED")] | length')
+
+          echo "Commenter: $COMMENTER | Is admin: $IS_ADMIN | Approvals: $APPROVALS"
+
+          if [ "$IS_ADMIN" = "false" ] && [ "$APPROVALS" -lt 2 ]; then
+            gh api repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments \
+              --method POST \
+              --field body="Deploy cancelled: **@$COMMENTER** is not a repo admin and this PR only has **$APPROVALS/2** required approvals. Either an admin must trigger the deploy, or the PR needs at least 2 approvals."
+            exit 1
+          fi
+
+      - name: Validate release branch
+        run: |
+          BRANCH="${{ env.PR_BRANCH }}"
+
+          if ! echo "$BRANCH" | grep -qE '^release/v[0-9]+\.[0-9]+\.[0-9]+$'; then
+            gh api repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments \
+              --method POST \
+              --field body="Deploy cancelled: branch \`$BRANCH\` does not match the required pattern \`release/vX.Y.Z\`. Only release branches may be deployed to main."
+            exit 1
+          fi
+
+          VERSION="${BRANCH#release/v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          echo "TAG=v$VERSION"    >> "$GITHUB_ENV"
+
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.PR_BRANCH }}
+          fetch-depth: 0
+          # NOTE: If branch protection requires signed commits, replace with:
+          #   token: ${{ secrets.RELEASE_PAT }}
+
+      - name: Configure git identity
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump package.json version
+        run: |
+          jq --arg v "${{ env.VERSION }}" '.version = $v' package.json > package.json.tmp
+          mv package.json.tmp package.json
+
+      - name: Commit version bump
+        run: |
+          git add package.json
+          if git diff --cached --quiet; then
+            echo "Version already at ${{ env.VERSION }}, skipping commit."
+          else
+            git commit -m "chore(release): bump version to ${{ env.VERSION }}"
+          fi
+
+      - name: Push to PR branch
+        run: |
+          git push origin HEAD:${{ env.PR_BRANCH }}
+
+      - name: Create git tag
+        run: |
+          git tag "${{ env.TAG }}"
+          git push origin "${{ env.TAG }}"
+
+      - name: Create GitHub Release
+        run: |
+          gh release create "${{ env.TAG }}" \
+            --title "Release ${{ env.TAG }}" \
+            --generate-notes \
+            --repo ${{ github.repository }}
+
+      - name: Merge PR
+        run: |
+          gh pr merge ${{ env.PR_NUMBER }} \
+            --merge \
+            --repo ${{ github.repository }}
+
+      - name: Post success comment
+        if: success()
+        run: |
+          gh api repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments \
+            --method POST \
+            --field body="Deployed successfully. Version \`${{ env.VERSION }}\` has been tagged as \`${{ env.TAG }}\`, a GitHub Release has been created with auto-generated release notes, and this PR has been merged into \`main\`."
+
+      - name: Post failure comment
+        if: failure()
+        run: |
+          gh api repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments \
+            --method POST \
+            --field body="Deploy failed. Check the [workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details." \
+            2>/dev/null || true
