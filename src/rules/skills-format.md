@@ -2,7 +2,7 @@
 
 ## User-invokable commands (`/name`)
 
-Commands are invoked directly by the user with `/name`. Use `commands/<name>/SKILL.md`:
+Commands are invoked **only** when the user explicitly types `/name`. Claude must never auto-trigger a command based on context — that is exclusively for skills. Use `commands/<name>/SKILL.md`:
 
 ```
 commands/
