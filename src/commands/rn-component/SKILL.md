@@ -71,7 +71,9 @@ For each template below:
 | `references/templates/hooks/useReanimatedStyles/types/IUseReanimatedStylesProps.ts.tmpl` | `<outputDir>/hooks/useReanimatedStyles/types/IUseReanimatedStylesProps.ts` |
 | `references/templates/hooks/useReanimatedStyles/types/index.ts.tmpl` | `<outputDir>/hooks/useReanimatedStyles/types/index.ts` |
 | `references/templates/services/index.ts.tmpl` | `<outputDir>/services/index.ts` |
+| `references/templates/services/fetch{{ComponentName}}Data.ts.tmpl` | `<outputDir>/services/fetch<ComponentName>Data.ts` |
 | `references/templates/library/index.ts.tmpl` | `<outputDir>/library/index.ts` |
+| `references/templates/library/format{{ComponentName}}Label.ts.tmpl` | `<outputDir>/library/format<ComponentName>Label.ts` |
 
 ## Confirmation
 
