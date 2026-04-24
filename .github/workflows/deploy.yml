@@ -126,6 +126,10 @@ jobs:
             --merge \
             --repo ${{ github.repository }}
 
+      - name: Delete release branch
+        run: |
+          git push origin --delete "${{ env.PR_BRANCH }}"
+
       - name: Post success comment
         if: success()
         run: |
