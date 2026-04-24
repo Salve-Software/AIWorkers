@@ -18,13 +18,7 @@
       "Bash(git -C * show*)",
       "Bash(git -C * rev-parse*)",
       "Bash(gh pr create*)",
-      "Bash(gh auth status*)",
-      "Bash(npm test*)",
-      "Bash(yarn test*)",
-      "Bash(pnpm test*)",
-      "Bash(npx vitest*)",
-      "Bash(pytest*)",
-      "Bash(make test*)"
+      "Bash(gh auth status*)"
     ],
     "deny": [
       "Bash(git push --force*)",
