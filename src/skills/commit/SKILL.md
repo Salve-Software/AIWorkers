@@ -3,6 +3,7 @@ name: commit
 description: This skill should be used when the user asks to "commit", "create commits", "commit changes", or wants to commit staged/unstaged changes following the Conventional Commits standard.
 argument-hint: [scope opcional]
 allowed-tools: [Agent]
+user-invocable: false
 ---
 
 # Conventional Commits
@@ -63,8 +64,9 @@ Your job is to analyze the git changes and create conventional commits.
 Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
 ```
 
-- Subject: max 72 characters, imperative mood ("add", not "added")
-- Scope: optional but helpful (e.g. `auth`, `ui`, `config`)
+- Subject: max 50 characters, imperative mood ("add", not "added")
+- Scope: optional, keep it short (1 word max: `auth`, `ui`, `config`)
+- Description: 2–4 words only — no full sentences
 - Body: only when the subject alone is insufficient
 
 ## Creating each commit

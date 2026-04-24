@@ -4,6 +4,7 @@ description: This skill should be used when the user asks to "create a branch", 
 argument-hint: [optional: brief description of the branch]
 allowed-tools: [Bash]
 model: haiku
+user-invocable: false
 ---
 
 # Branch Creator

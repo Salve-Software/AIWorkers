@@ -4,6 +4,7 @@ description: This skill should be used when the user asks to "create a pull requ
 argument-hint: [optional: PR title override]
 allowed-tools: [Bash, Read, Glob]
 model: haiku
+user-invocable: false
 ---
 
 # Pull Request Creator
