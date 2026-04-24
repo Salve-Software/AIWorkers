@@ -61,7 +61,7 @@ For each template below:
 |-----------------------------------|--------|
 | `references/templates/index.tsx.tmpl` | `<outputDir>/index.tsx` |
 | `references/templates/styles.ts.tmpl` | `<outputDir>/styles.ts` |
-| `references/templates/types/IComponentNameProps.ts.tmpl` | `<outputDir>/types/I<ComponentName>Props.ts` |
+| `references/templates/types/I{{ComponentName}}Props.ts.tmpl` | `<outputDir>/types/I<ComponentName>Props.ts` |
 | `references/templates/types/index.ts.tmpl` | `<outputDir>/types/index.ts` |
 | `references/templates/hooks/index.ts.tmpl` | `<outputDir>/hooks/index.ts` |
 | `references/templates/hooks/useComponentNameViewModel/index.ts.tmpl` | `<outputDir>/hooks/use<ComponentName>ViewModel/index.ts` |
