@@ -1,6 +1,6 @@
 {
   "name": "@salve-software/ai-workers",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Central package for AI configurations and Claude Code rules.",
   "scripts": {
     "postinstall": "bash scripts/setup.sh"
