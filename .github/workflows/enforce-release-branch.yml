@@ -20,7 +20,8 @@ jobs:
           if ! echo "$BRANCH" | grep -qE '^release/v[0-9]+\.[0-9]+\.[0-9]+$'; then
             gh api repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
               --method POST \
-              --field body="This PR cannot target \`main\` directly. Only \`release/vX.Y.Z\` branches may merge into \`main\`. Please retarget this PR to a release branch."
+              --field body="This PR has been closed automatically. Only \`release/vX.Y.Z\` branches may target \`main\`. Please retarget this PR to a release branch."
+            gh pr close ${{ github.event.pull_request.number }} --repo ${{ github.repository }}
             echo "::error::PRs targeting main must come from a release/vX.Y.Z branch. Got: $BRANCH"
             exit 1
           fi
