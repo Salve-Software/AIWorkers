@@ -1,15 +1,10 @@
-import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
 import { I{{ComponentName}}Props } from './types';
 
 export const useStyles = (props: I{{ComponentName}}Props) => {
-  return useMemo(
-    () =>
-      StyleSheet.create({
-        container: {
-          flex: 1,
-        },
-      }),
-    [],
-  );
+  return StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+  });
 };
