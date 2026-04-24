@@ -2,7 +2,7 @@
 
 ## User-invokable commands (`/name`)
 
-Use the `commands/<name>/SKILL.md` format:
+Commands are invoked directly by the user with `/name`. Use `commands/<name>/SKILL.md`:
 
 ```
 commands/
@@ -13,18 +13,22 @@ commands/
     └── scripts/       ← optional
 ```
 
+Examples: `/feature`, `/ship`
+
 ## Context-triggered skills
 
-Use the `skills/<name>/SKILL.md` format:
+Skills are invoked automatically by Claude when relevant — never by the user. Always include `user-invocable: false` in frontmatter. Use `skills/<name>/SKILL.md`:
 
 ```
 skills/
 └── <name>/
-    ├── SKILL.md       ← required
+    ├── SKILL.md       ← required (must have user-invocable: false)
     ├── references/    ← optional
     ├── examples/      ← optional
     └── scripts/       ← optional
 ```
+
+Examples: `branch`, `commit`, `pr`
 
 Never use the legacy flat formats `commands/<name>.md` or `skills/<name>.md`.
 
