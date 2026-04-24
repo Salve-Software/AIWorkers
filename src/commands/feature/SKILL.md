@@ -27,7 +27,7 @@ Notify the user: `🧠 Agent 1 (Planner — Opus) is analyzing the codebase and 
 Spawn a fresh agent using the Agent tool with **model parameter set to "opus"**:
 
 ```
-Read src/agents/planner.md and inline its full content at the start of this prompt.
+Read .claude/agents/aiworkers/planner.md and inline its full content at the start of this prompt.
 
 Start your response with: "🧠 Running as: <your actual model name>"
 
@@ -73,7 +73,7 @@ Notify the user: `⚙️ Agent 2 (Implementer — Sonnet) is creating the branch
 Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
-Read src/agents/implementer.md and inline its full content at the start of this prompt.
+Read .claude/agents/aiworkers/implementer.md and inline its full content at the start of this prompt.
 
 Start your response with: "⚙️ Running as: <your actual model name>"
 
@@ -136,7 +136,7 @@ Notify the user: `🔧 Tests failed. Spawning fix agent (Sonnet) to resolve fail
 Spawn a fresh agent using the Agent tool with **model parameter set to "sonnet"**:
 
 ```
-Read src/agents/fixer.md and inline its full content at the start of this prompt.
+Read .claude/agents/aiworkers/fixer.md and inline its full content at the start of this prompt.
 
 Start your response with: "🔧 Running as: <your actual model name>"
 
@@ -172,7 +172,7 @@ Notify the user: `🔍 Agent 3 (Reviewer — Sonnet) is reviewing the implementa
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-Read src/agents/reviewer.md and inline its full content at the start of this prompt.
+Read .claude/agents/aiworkers/reviewer.md and inline its full content at the start of this prompt.
 
 Start your response with: "🔍 Running as: <your actual model name>"
 
@@ -213,7 +213,7 @@ Notify the user: `🛠️ Agent 4 (Fixer — Sonnet) is resolving review issues.
 Spawn a fresh agent using **model: sonnet** with:
 
 ```
-Read src/agents/fixer.md and inline its full content at the start of this prompt.
+Read .claude/agents/aiworkers/fixer.md and inline its full content at the start of this prompt.
 
 Start your response with: "🛠️ Running as: <your actual model name>"
 
@@ -243,9 +243,8 @@ Re-run tests after fixes to confirm nothing broke.
 
 After ACT (or directly if no issues):
 
-1. Follow `/feature-docs` command logic to generate documentation.
-2. Follow `/pr` command logic to create the pull request.
-3. Display final summary:
+1. Follow `/pr` command logic to create the pull request.
+2. Display final summary:
 
 ```
 ## Feature complete: <branch-name>
@@ -258,10 +257,6 @@ After ACT (or directly if no issues):
 
 ### All commits
 <full commit list>
-
-### Docs
-- docs/features/<name>/feature.md
-- docs/features/<name>/context.md
 
 ### Pull Request
 <PR URL>
@@ -278,4 +273,4 @@ After ACT (or directly if no issues):
 - Each agent receives only what it needs — no leaking full conversation context
 - User approves at: end of PLAN, end of DO, end of CHECK
 - All commits follow Conventional Commits and include the co-author line
-- The commands `/branch`, `/commit`, `/feature-docs`, and `/pr` are expected to exist in `src/commands/`. Before starting Phase 2, verify that each required command directory or file is present. If any is missing, warn the user and abort rather than silently failing.
+- The skills `branch`, `commit`, and `pr` are expected to exist in `.claude/skills/aiworkers/`. Before starting Phase 2, verify that each required skill directory is present. If any is missing, warn the user and abort rather than silently failing.
