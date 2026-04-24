@@ -116,7 +116,7 @@ jobs:
       - name: Create GitHub Release
         run: |
           gh release create "${{ env.TAG }}" \
-            --title "Release ${{ env.TAG }}" \
+            --title "${{ env.TAG }}" \
             --generate-notes \
             --repo ${{ github.repository }}
 
