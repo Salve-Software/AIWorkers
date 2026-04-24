@@ -25,10 +25,10 @@ Extract `--name` and `--path` values from `$ARGUMENTS`.
 
 Run via Bash:
 ```bash
-[ -d "<outputDir>" ] && [ "$(ls -A "<outputDir>")" ] && echo "NONEMPTY" || echo "OK"
+if [ -d "<outputDir>" ]; then echo "EXISTS"; else echo "OK"; fi
 ```
 
-If the result is `NONEMPTY`: stop and print `⚠️ <outputDir> already exists. Aborting to avoid overwrite.`
+If the result is `EXISTS`: stop and print `⚠️ <outputDir> already exists. Aborting to avoid overwrite.`
 
 ## Architecture summary
 
