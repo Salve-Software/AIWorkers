@@ -13,7 +13,7 @@ Extract `--name` and `--path` values from `$ARGUMENTS`.
 - If `--name` is missing: stop and print `⚠️ Missing --name. Usage: /rn-component --name MyButton --path src/components`
 - If `--name` is not valid PascalCase (`^[A-Z][A-Za-z0-9]*$`): stop and print `⚠️ Invalid component name. Must be PascalCase (e.g. MyButton).`
 - If `--path` is missing: ask the user `Where should the component be created? Provide the output directory path:` and wait for their answer before continuing.
-- If `--path` contains spaces: stop and print `⚠️ Path must not contain spaces. Please provide a single-token path.`
+- After `--path` is resolved (from arguments or from the user): if it contains spaces, stop and print `⚠️ Path must not contain spaces. Please provide a single-token path.`
 
 ## Derive variables
 
