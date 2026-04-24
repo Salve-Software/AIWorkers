@@ -8,11 +8,13 @@ TARGET_DIR="${INIT_CWD:-$PWD}"
 
 CLAUDE_DIR="$TARGET_DIR/.claude"
 AW_COMMANDS="$CLAUDE_DIR/commands/aiworkers"
+AW_SKILLS="$CLAUDE_DIR/skills/aiworkers"
 AW_AGENTS="$CLAUDE_DIR/agents/aiworkers"
 AW_RULES="$CLAUDE_DIR/rules/aiworkers"
 CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
 
 mkdir -p "$AW_COMMANDS"
+mkdir -p "$AW_SKILLS"
 mkdir -p "$AW_AGENTS"
 mkdir -p "$AW_RULES"
 touch "$CLAUDE_MD"
@@ -26,6 +28,17 @@ find "$AW_COMMANDS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && r
 for dir in "$AIWORKERS_DIR/src/commands"/*/; do
   name=$(basename "$dir")
   ln -sfn "$dir" "$AW_COMMANDS/$name"
+  echo "  ✓ $name"
+done
+
+echo ""
+
+# Link skills
+echo "Skills:"
+find "$AW_SKILLS" -maxdepth 1 -type l | while read -r f; do [ ! -e "$f" ] && rm "$f"; done
+for dir in "$AIWORKERS_DIR/src/skills"/*/; do
+  name=$(basename "$dir")
+  ln -sfn "$dir" "$AW_SKILLS/$name"
   echo "  ✓ $name"
 done
 
