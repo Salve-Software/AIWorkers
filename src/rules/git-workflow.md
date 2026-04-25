@@ -11,5 +11,4 @@ Never commit directly to `main` or `master`. If already on `main`, run `/branch`
 ## Branch naming conventions
 
 - Release branches: `release/v{version}` — always include the `v` prefix (e.g. `release/v0.2.0`, `release/v1.0.0`).
-- Dev branches: `dev/v{version}` (e.g. `dev/v1.0.0`).
 - Feature branches: `feat/{description}` (e.g. `feat/atoms-components`).
