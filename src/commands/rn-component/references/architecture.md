@@ -43,3 +43,19 @@ This document defines the layering contract for React Native components scaffold
 ## Barrel cycle rule
 Templates use deep relative imports only (e.g. `./types`, `../useReanimatedStyles/types`).
 Never use `../..` shorthand — it creates import cycles between barrels.
+
+## JSX conditional rendering
+Never wrap a JSX branch of a ternary in `()`. Use the line-break form:
+
+```tsx
+{isRequired
+  ?
+  <Icon
+    icon="Asterisk"
+    size="small_16"
+  />
+  : null
+}
+```
+
+See `src/rules/jsx-style.md` for the full rule and rationale.
