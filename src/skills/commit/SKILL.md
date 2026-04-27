@@ -1,6 +1,6 @@
 ---
 name: commit
-description: This skill should be used when the user asks to "commit", "create commits", "commit changes", or wants to commit staged/unstaged changes following the Conventional Commits standard.
+description: This skill should be used whenever the user wants to save, record, or commit changes to git — regardless of the language or phrasing used.
 argument-hint: [scope opcional]
 allowed-tools: [Agent]
 user-invocable: false
