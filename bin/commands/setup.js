@@ -4,11 +4,7 @@ import boxen from 'boxen';
 import { c } from '../banner.js';
 
 const isWindows = process.platform === 'win32';
-
 const AIWORKERS_DIR = path.join(import.meta.dirname, '..', '..');
-const TARGET_DIR = process.env.INIT_CWD || process.cwd();
-const CLAUDE_DIR = path.join(TARGET_DIR, '.claude');
-const CLAUDE_MD = path.join(CLAUDE_DIR, 'CLAUDE.md');
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true });
@@ -28,9 +24,7 @@ function linkDir(srcDir, destDir, label) {
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    const src = path.join(srcDir, entry.name);
-    const dest = path.join(destDir, entry.name);
-    symlink(src, dest);
+    symlink(path.join(srcDir, entry.name), path.join(destDir, entry.name));
     console.log(`    ${c.green}✓${c.reset} ${entry.name}`);
   }
 }
@@ -42,22 +36,20 @@ function linkFiles(srcDir, destDir, label) {
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.name.endsWith('.md')) continue;
-    const src = path.join(srcDir, entry.name);
     const dest = path.join(destDir, entry.name);
     if (isWindows) {
-      fs.copyFileSync(src, dest);
+      fs.copyFileSync(path.join(srcDir, entry.name), dest);
     } else {
-      symlink(src, dest);
+      symlink(path.join(srcDir, entry.name), dest);
     }
     console.log(`    ${c.green}✓${c.reset} ${entry.name}`);
   }
 }
 
-function updateClaudeMd(rulesDir) {
-  ensureDir(CLAUDE_DIR);
-  if (!fs.existsSync(CLAUDE_MD)) fs.writeFileSync(CLAUDE_MD, '');
+function updateClaudeMd(claudeMd, rulesDir) {
+  if (!fs.existsSync(claudeMd)) fs.writeFileSync(claudeMd, '');
 
-  const current = fs.readFileSync(CLAUDE_MD, 'utf8');
+  const current = fs.readFileSync(claudeMd, 'utf8');
   const entries = fs.readdirSync(rulesDir).filter(f => f.endsWith('.md'));
   const lines = [];
 
@@ -74,22 +66,27 @@ function updateClaudeMd(rulesDir) {
 
   if (lines.length > 0) {
     const prefix = current.length > 0 && !current.endsWith('\n') ? '\n' : '';
-    fs.appendFileSync(CLAUDE_MD, prefix + lines.join('\n') + '\n');
+    fs.appendFileSync(claudeMd, prefix + lines.join('\n') + '\n');
   }
 }
 
-export function setup() {
-  console.log(`${c.dim}  Linking to ${CLAUDE_DIR}${c.reset}\n`);
+export function setup(targetDir) {
+  const resolvedTarget = targetDir ?? process.env.INIT_CWD ?? process.cwd();
+  const claudeDir = path.join(resolvedTarget, '.claude');
+  const claudeMd = path.join(claudeDir, 'CLAUDE.md');
 
-  linkDir(path.join(AIWORKERS_DIR, 'src', 'commands'), path.join(CLAUDE_DIR, 'commands', 'aiworkers'), 'Commands');
+  ensureDir(claudeDir);
+  console.log(`${c.dim}  Linking to ${claudeDir}${c.reset}\n`);
+
+  linkDir(path.join(AIWORKERS_DIR, 'src', 'commands'), path.join(claudeDir, 'commands', 'aiworkers'), 'Commands');
   console.log();
-  linkDir(path.join(AIWORKERS_DIR, 'src', 'skills'), path.join(CLAUDE_DIR, 'skills', 'aiworkers'), 'Skills');
+  linkDir(path.join(AIWORKERS_DIR, 'src', 'skills'), path.join(claudeDir, 'skills', 'aiworkers'), 'Skills');
   console.log();
-  linkFiles(path.join(AIWORKERS_DIR, 'src', 'agents'), path.join(CLAUDE_DIR, 'agents', 'aiworkers'), 'Agents');
+  linkFiles(path.join(AIWORKERS_DIR, 'src', 'agents'), path.join(claudeDir, 'agents', 'aiworkers'), 'Agents');
   console.log();
-  linkFiles(path.join(AIWORKERS_DIR, 'src', 'rules'), path.join(CLAUDE_DIR, 'rules', 'aiworkers'), 'Rules');
+  linkFiles(path.join(AIWORKERS_DIR, 'src', 'rules'), path.join(claudeDir, 'rules', 'aiworkers'), 'Rules');
   console.log();
-  updateClaudeMd(path.join(AIWORKERS_DIR, 'src', 'rules'));
+  updateClaudeMd(claudeMd, path.join(AIWORKERS_DIR, 'src', 'rules'));
 
   console.log(boxen(
     `${c.green}${c.bold}Done!${c.reset} AIWorkers is ready in this project.\n\n` +
