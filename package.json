@@ -1,9 +1,13 @@
 {
-  "name": "@salve-software/ai-workers",
-  "version": "0.2.0",
+  "name": "@salve-software/aiworkers",
+  "type": "module",
+  "version": "0.2.1",
   "description": "Central package for AI configurations and Claude Code rules.",
+  "bin": {
+    "aiworkers": "bin/aiworkers.js"
+  },
   "scripts": {
-    "postinstall": "bash scripts/setup.sh"
+    "postinstall": "node bin/aiworkers.js --help"
   },
   "repository": {
     "type": "git",
@@ -12,6 +16,13 @@
   "author": "eumaninho54",
   "license": "MIT",
   "publishConfig": {
-    "access": "restricted"
+    "access": "public"
+  },
+  "devDependencies": {
+    "release-it": "^20.0.1"
+  },
+  "dependencies": {
+    "boxen": "^8.0.1",
+    "figlet": "^1.11.0"
   }
 }

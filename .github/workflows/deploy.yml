@@ -75,57 +75,38 @@ jobs:
 
           VERSION="${BRANCH#release/v}"
           echo "VERSION=$VERSION" >> "$GITHUB_ENV"
-          echo "TAG=v$VERSION"    >> "$GITHUB_ENV"
 
-      - name: Checkout PR branch
-        uses: actions/checkout@v5
+      - name: Merge PR into main
+        run: |
+          gh pr merge ${{ env.PR_NUMBER }} \
+            --merge \
+            --repo ${{ github.repository }}
+
+      - name: Checkout main
+        uses: actions/checkout@v4
         with:
-          ref: ${{ env.PR_BRANCH }}
+          ref: main
           fetch-depth: 0
-          # NOTE: If branch protection requires signed commits, replace with:
-          #   token: ${{ secrets.RELEASE_PAT }}
 
       - name: Configure git identity
         run: |
           git config user.name  "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
 
-      - name: Bump package.json version
-        run: |
-          jq --arg v "${{ env.VERSION }}" '.version = $v' package.json > package.json.tmp
-          mv package.json.tmp package.json
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Commit version bump
-        run: |
-          git add package.json
-          if git diff --cached --quiet; then
-            echo "Version already at ${{ env.VERSION }}, skipping commit."
-          else
-            git commit -m "chore(release): bump version to ${{ env.VERSION }}"
-          fi
+      - name: Install dependencies
+        run: npm ci
 
-      - name: Push to PR branch
-        run: |
-          git push origin HEAD:${{ env.PR_BRANCH }}
-
-      - name: Merge PR
-        run: |
-          gh pr merge ${{ env.PR_NUMBER }} \
-            --merge \
-            --repo ${{ github.repository }}
-
-      - name: Tag merge commit on main
-        run: |
-          git fetch origin main
-          git tag "${{ env.TAG }}" origin/main
-          git push origin "${{ env.TAG }}"
-
-      - name: Create GitHub Release
-        run: |
-          gh release create "${{ env.TAG }}" \
-            --title "${{ env.TAG }}" \
-            --generate-notes \
-            --repo ${{ github.repository }}
+      - name: Run release-it
+        run: npx release-it ${{ env.VERSION }} --ci
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Delete release branch
         run: |
@@ -136,7 +117,7 @@ jobs:
         run: |
           gh api repos/${{ github.repository }}/issues/${{ env.PR_NUMBER }}/comments \
             --method POST \
-            --field body="Deployed successfully. Version \`${{ env.VERSION }}\` has been tagged as \`${{ env.TAG }}\`, a GitHub Release has been created with auto-generated release notes, and this PR has been merged into \`main\`."
+            --field body="Deployed successfully. Version \`${{ env.VERSION }}\` published to npm and released on GitHub."
 
       - name: Post failure comment
         if: failure()
