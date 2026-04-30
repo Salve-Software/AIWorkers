@@ -1,0 +1,15 @@
+import { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
+import type { IUseReanimatedStylesProps } from './types';
+
+// react-native-reanimated logic only — never static styles here.
+export const useReanimatedStyles = (props: IUseReanimatedStylesProps) => {
+  const progress = useSharedValue(0);
+
+  const animatedContainer = useAnimatedStyle(() => ({
+    opacity: progress.value,
+  }));
+
+  return {
+    animatedContainer,
+  };
+};

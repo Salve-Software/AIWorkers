@@ -1,5 +1,6 @@
 @src/rules/skills-format.md
 @src/rules/git-workflow.md
+@src/rules/jsx-style.md
 
 ## Using skills
 
