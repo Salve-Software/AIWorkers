@@ -1,6 +1,7 @@
 ---
 name: land
 description: Use when the user asks to create a branch and commit, or create a branch + commit + PR together. Orchestrates /branch and /commit while sharing the git diff context to avoid redundant reads. After committing, if the user also asked for a PR, invoke /pr.
+user-invocable: true
 argument-hint: [optional: branch name or description]
 allowed-tools: [Bash, Read, Agent]
 ---
