@@ -1,7 +1,7 @@
 {
   "name": "@salve-software/aiworkers",
   "type": "module",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Central package for AI configurations and Claude Code rules.",
   "bin": {
     "aiworkers": "bin/aiworkers.js"
