@@ -1,6 +1,7 @@
 ---
 name: rn-component
-description: Scaffolds a React Native component using the Layered Hook Architecture (View / ViewModel / Styles / Animated / Services / Library). Use ONLY when the user explicitly types /rn-component.
+description: Scaffolds a React Native component using the Layered Hook Architecture (View / ViewModel / Styles / Animated / Services / Library).
+user-invocable: true
 argument-hint: --name <ComponentName> [--path <output-dir>]
 allowed-tools: Bash, Read, Write
 model: haiku
