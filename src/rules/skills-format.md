@@ -2,12 +2,12 @@
 
 ## User-invokable commands (`/name`)
 
-Commands are invoked **only** when the user explicitly types `/name`. Claude must never auto-trigger a command based on context — that is exclusively for skills. Use `commands/<name>/SKILL.md`:
+Commands are invoked **only** when the user explicitly types `/name`. Claude must never auto-trigger a command based on context — that is exclusively for skills. Always include `user-invocable: true` in frontmatter. Use `commands/<name>/SKILL.md`:
 
 ```
 commands/
 └── <name>/
-    ├── SKILL.md       ← required
+    ├── SKILL.md       ← required (must have user-invocable: true)
     ├── references/    ← optional
     ├── examples/      ← optional
     └── scripts/       ← optional
