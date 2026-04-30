@@ -1,6 +1,6 @@
 ---
 name: commit
-description: This skill should be used when the user asks to "commit", "create commits", "commit changes", or wants to commit staged/unstaged changes following the Conventional Commits standard.
+description: This skill should be used whenever the user wants to save, record, or commit changes to git — regardless of the language or phrasing used.
 argument-hint: [scope opcional]
 allowed-tools: [Agent]
 user-invocable: false
@@ -22,6 +22,8 @@ To get the model ID: look in your system context for the line "The exact model I
 
 Your job is to analyze the git changes and create conventional commits.
 
+Read `src/rules/conventional-commits.md` and follow it strictly for commit types, format, and rules.
+
 ## Pre-flight check
 
 1. Run `git branch --show-current` to get the current branch.
@@ -35,39 +37,6 @@ Your job is to analyze the git changes and create conventional commits.
 3. Group related files by semantic context
 4. For each group, determine the commit type and create the commit
 5. Print each commit name as it is created
-
-## Commit types
-
-| Type | When to use |
-|---|---|
-| `feat` | New feature |
-| `fix` | Bug fix |
-| `docs` | Documentation only |
-| `style` | Formatting, whitespace (no logic change) |
-| `refactor` | Code restructuring without feature/fix |
-| `perf` | Performance improvement |
-| `test` | Adding or updating tests |
-| `build` | Build system, dependencies |
-| `ci` | CI/CD configuration |
-| `chore` | Maintenance, tooling |
-| `raw` | Raw data, config files |
-| `cleanup` | Dead code removal, cleanup |
-| `remove` | Removing features or files |
-
-## Commit format
-
-```
-<type>(<scope>): <short description>
-
-[optional body if subject is not enough]
-
-Co-Authored-By: Claude Haiku 4.5 <noreply@anthropic.com>
-```
-
-- Subject: max 50 characters, imperative mood ("add", not "added")
-- Scope: optional, keep it short (1 word max: `auth`, `ui`, `config`)
-- Description: 2–4 words only — no full sentences
-- Body: only when the subject alone is insufficient
 
 ## Creating each commit
 
@@ -87,13 +56,4 @@ EOF
 3. Print to the user: `✓ feat(auth): add JWT token refresh`
 
 Commit names appear one below the other as commits are created.
-
-## Rules
-
-- Never mix unrelated changes in one commit
-- Prefer smaller, focused commits
-- If a file contains changes of different natures, split them and mention in the body
-- Use `git diff HEAD -- <file>` to inspect specific changes before deciding grouping
-- Never use `git add .` or `git add -A` — always stage specific files by name
-- Never run `git push` — this command only commits, pushing is the user's responsibility
 ```

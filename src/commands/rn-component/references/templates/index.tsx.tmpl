@@ -1,0 +1,13 @@
+import React from 'react';
+import { View } from 'react-native';
+import type { I{{ComponentName}}Props } from './types';
+import { useStyles } from './styles';
+import { use{{ComponentName}}ViewModel, useReanimatedStyles } from './hooks';
+
+export const {{ComponentName}}: React.FC<I{{ComponentName}}Props> = (props) => {
+  const styles = useStyles(props);
+  const reanimatedStyles = useReanimatedStyles({});
+  const {} = use{{ComponentName}}ViewModel(props);
+
+  return <View style={styles.container} />;
+};

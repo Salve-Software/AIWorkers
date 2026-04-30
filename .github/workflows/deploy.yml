@@ -78,7 +78,7 @@ jobs:
           echo "TAG=v$VERSION"    >> "$GITHUB_ENV"
 
       - name: Checkout PR branch
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ env.PR_BRANCH }}
           fetch-depth: 0
@@ -108,9 +108,16 @@ jobs:
         run: |
           git push origin HEAD:${{ env.PR_BRANCH }}
 
-      - name: Create git tag
+      - name: Merge PR
         run: |
-          git tag "${{ env.TAG }}"
+          gh pr merge ${{ env.PR_NUMBER }} \
+            --merge \
+            --repo ${{ github.repository }}
+
+      - name: Tag merge commit on main
+        run: |
+          git fetch origin main
+          git tag "${{ env.TAG }}" origin/main
           git push origin "${{ env.TAG }}"
 
       - name: Create GitHub Release
@@ -120,15 +127,9 @@ jobs:
             --generate-notes \
             --repo ${{ github.repository }}
 
-      - name: Merge PR
-        run: |
-          gh pr merge ${{ env.PR_NUMBER }} \
-            --merge \
-            --repo ${{ github.repository }}
-
       - name: Delete release branch
         run: |
-          git push origin --delete "${{ env.PR_BRANCH }}"
+          git push origin --delete "${{ env.PR_BRANCH }}" || true
 
       - name: Post success comment
         if: success()

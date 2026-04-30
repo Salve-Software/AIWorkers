@@ -1,6 +1,7 @@
 ---
 name: feature
 description: This skill should be used when the user asks to "build a feature", "implement a feature", "develop a feature", or wants to autonomously develop, review, and ship a complete feature following the PDCA cycle.
+user-invocable: true
 argument-hint: <feature description>
 allowed-tools: [Bash, Read, Glob, Grep, Agent]
 model: sonnet
@@ -87,23 +88,13 @@ Your job is to implement a feature exactly as described in the plan below.
 
 ## Instructions
 
-1. Follow the /branch command logic to create the branch (feat/, fix/, dev/) based on the feature type.
+Read `src/rules/git-workflow.md` for branch naming rules.
+Read `src/rules/conventional-commits.md` for commit types, format, and rules.
+
+1. Create the branch following the branch naming rules from `git-workflow.md`.
 2. Implement each step from the plan sequentially.
-3. After each logical implementation chunk, follow the /commit command logic to commit (Conventional Commits, imperative, max 72 chars).
-4. Co-author line on every commit: Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-5. After all implementation is done, check if any test file was created or modified. If no test was touched, note it in your final report.
-
-## /branch logic
-- feat/ — new feature
-- fix/ — bug fix
-- dev/ — project/umbrella branch
-- release/ — release, always with vX.X.X
-- Lowercase, kebab-case, 2–4 words
-
-## /commit logic
-- Run git add <specific files> (never git add . or git add -A)
-- Commit with HEREDOC format including co-author
-- Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, cleanup, remove
+3. After each logical implementation chunk, commit following `conventional-commits.md`. Co-author line on every commit: Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+4. After all implementation is done, check if any test file was created or modified. If no test was touched, note it in your final report.
 
 Do not push. Do not open a PR.
 
