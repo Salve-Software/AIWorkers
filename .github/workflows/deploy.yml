@@ -80,6 +80,7 @@ jobs:
         run: |
           gh pr merge ${{ env.PR_NUMBER }} \
             --merge \
+            --admin \
             --repo ${{ github.repository }}
 
       - name: Checkout main
