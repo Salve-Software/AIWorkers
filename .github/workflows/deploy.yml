@@ -115,6 +115,15 @@ jobs:
       - name: Publish to npm
         run: npm publish --provenance --access public
 
+      - name: Create git tag and GitHub Release
+        run: |
+          git tag "v${{ env.VERSION }}"
+          git push origin "v${{ env.VERSION }}"
+          gh release create "v${{ env.VERSION }}" \
+            --title "v${{ env.VERSION }}" \
+            --generate-notes \
+            --repo ${{ github.repository }}
+
       - name: Delete release branch
         run: |
           git push origin --delete "${{ env.PR_BRANCH }}" || true
