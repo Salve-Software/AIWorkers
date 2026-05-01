@@ -3,45 +3,29 @@ import path from 'path';
 import boxen from 'boxen';
 import { c } from '../banner.js';
 
-const isWindows = process.platform === 'win32';
 const AIWORKERS_DIR = path.join(import.meta.dirname, '..', '..');
 
-function ensureDir(dir) {
-  fs.mkdirSync(dir, { recursive: true });
-}
-
-function symlink(src, dest) {
-  if (fs.existsSync(dest)) {
-    fs.rmSync(dest, { recursive: true, force: true });
-  }
-  fs.symlinkSync(src, dest, isWindows ? 'junction' : 'dir');
-}
-
-function linkDir(srcDir, destDir, label) {
-  ensureDir(destDir);
+function copyDir(srcDir, destDir, label) {
+  fs.mkdirSync(destDir, { recursive: true });
   console.log(`  ${c.bold}${label}${c.reset}`);
 
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.isDirectory()) continue;
-    symlink(path.join(srcDir, entry.name), path.join(destDir, entry.name));
+    const dest = path.join(destDir, entry.name);
+    fs.cpSync(path.join(srcDir, entry.name), dest, { recursive: true, force: true });
     console.log(`    ${c.green}✓${c.reset} ${entry.name}`);
   }
 }
 
-function linkFiles(srcDir, destDir, label) {
-  ensureDir(destDir);
+function copyFiles(srcDir, destDir, label) {
+  fs.mkdirSync(destDir, { recursive: true });
   console.log(`  ${c.bold}${label}${c.reset}`);
 
   const entries = fs.readdirSync(srcDir, { withFileTypes: true });
   for (const entry of entries) {
     if (!entry.name.endsWith('.md')) continue;
-    const dest = path.join(destDir, entry.name);
-    if (isWindows) {
-      fs.copyFileSync(path.join(srcDir, entry.name), dest);
-    } else {
-      symlink(path.join(srcDir, entry.name), dest);
-    }
+    fs.copyFileSync(path.join(srcDir, entry.name), path.join(destDir, entry.name));
     console.log(`    ${c.green}✓${c.reset} ${entry.name}`);
   }
 }
@@ -75,16 +59,16 @@ export function setup(targetDir) {
   const claudeDir = path.join(resolvedTarget, '.claude');
   const claudeMd = path.join(claudeDir, 'CLAUDE.md');
 
-  ensureDir(claudeDir);
-  console.log(`${c.dim}  Linking to ${claudeDir}${c.reset}\n`);
+  fs.mkdirSync(claudeDir, { recursive: true });
+  console.log(`${c.dim}  Copying to ${claudeDir}${c.reset}\n`);
 
-  linkDir(path.join(AIWORKERS_DIR, 'src', 'commands'), path.join(claudeDir, 'commands', 'aiworkers'), 'Commands');
+  copyDir(path.join(AIWORKERS_DIR, 'src', 'commands'), path.join(claudeDir, 'commands', 'aiworkers'), 'Commands');
   console.log();
-  linkDir(path.join(AIWORKERS_DIR, 'src', 'skills'), path.join(claudeDir, 'skills', 'aiworkers'), 'Skills');
+  copyDir(path.join(AIWORKERS_DIR, 'src', 'skills'), path.join(claudeDir, 'skills', 'aiworkers'), 'Skills');
   console.log();
-  linkFiles(path.join(AIWORKERS_DIR, 'src', 'agents'), path.join(claudeDir, 'agents', 'aiworkers'), 'Agents');
+  copyFiles(path.join(AIWORKERS_DIR, 'src', 'agents'), path.join(claudeDir, 'agents', 'aiworkers'), 'Agents');
   console.log();
-  linkFiles(path.join(AIWORKERS_DIR, 'src', 'rules'), path.join(claudeDir, 'rules', 'aiworkers'), 'Rules');
+  copyFiles(path.join(AIWORKERS_DIR, 'src', 'rules'), path.join(claudeDir, 'rules', 'aiworkers'), 'Rules');
   console.log();
   updateClaudeMd(claudeMd, path.join(AIWORKERS_DIR, 'src', 'rules'));
 
