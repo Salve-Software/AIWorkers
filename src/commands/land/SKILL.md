@@ -39,12 +39,15 @@ Instruct the commit agent to:
 - If yes: read its contents as the diff instead of running `git diff HEAD`
 - If no: run `git diff HEAD` normally
 
-### 4. Delete temp file
+### 4. Delete temp file — MANDATORY
 
-After /commit completes (success or failure), the orchestrator deletes the temp file:
+**This step is non-optional. Run it unconditionally, even if /commit failed or was skipped.**
+
 ```bash
-rm .claude/.aiworkers-context.tmp
+rm -f .claude/.aiworkers-context.tmp
 ```
+
+Do not proceed to step 5 without confirming this command ran.
 
 ### 5. Run /pr (if requested)
 
@@ -53,6 +56,6 @@ If the user's original request included creating a PR, read and follow `.claude/
 ## Rules
 
 - The orchestrator is solely responsible for saving and deleting `.claude/.aiworkers-context.tmp` — skills only read it, never delete it
-- Always delete `.claude/.aiworkers-context.tmp` after /commit, even if commit fails
+- **Always** delete `.claude/.aiworkers-context.tmp` after /commit, even if commit fails — use `rm -f` so it never errors
 - If /branch fails, delete the tmp file before stopping
 - Never push the branch unless /pr is being run (which handles pushing itself)
